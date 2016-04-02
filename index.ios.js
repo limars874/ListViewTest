@@ -50,13 +50,12 @@ class ListViewTest extends Component {
 
 
     render() {
-        console.log('render...')
 
         return (
             <View style={styles.container}>
                 <ListView
                     dataSource={this.state.dataSource}
-                    renderRow={(rowData,rowID) => <Text>{rowData}</Text>}
+                    renderRow={(rowData,rowID) => <Text>{rowData}{console.log('renderRow is '+rowData)}</Text>}
                 />
 
                 <Text>data is {data[0]} {data[1]} {data[2]}</Text>
