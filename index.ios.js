@@ -45,6 +45,13 @@ class ListViewTest extends Component {
             {dataSource:this.state.dataSource.cloneWithRows(data2)}
         );
     }
+    changeds3(){
+        console.log('state ds data changing problem...');
+        data[0] = 1 ;
+        this.setState(
+            {dataSource:this.state.dataSource.cloneWithRows(data)}
+        );
+    }
 
 
 
@@ -64,6 +71,9 @@ class ListViewTest extends Component {
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.buttonstyle,{borderColor:'red'}]} onPress={()=>this.changeds2()}>
                     <Text>Change state datasource</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.buttonstyle,{borderColor:'red'}]} onPress={()=>this.changeds3()}>
+                    <Text>modify old data</Text>
                 </TouchableOpacity>
 
             </View>
