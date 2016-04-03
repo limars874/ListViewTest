@@ -4,6 +4,8 @@
  */
 'use strict';
 
+var Dimensions = require('Dimensions');
+
 import React, {
     AppRegistry,
     Component,
@@ -14,46 +16,79 @@ import React, {
     TouchableOpacity,
 } from 'react-native';
 
-var data = [1000,2000,3000]
-var ds = new ListView.DataSource({rowHasChanged: (r1, r2) =>
-{
-    if(r1 !== r2){
-        console.log('rowHasChanged!')
-    }else {console.log('rowHasNotChanged')}
-    return r1 !== r2
-}});
+
+var screenW = Dimensions.get('window').width;
 
 class ListViewTest extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
+
+        var data = {Sone: [1001, 1002, 1003, 1004], Stwo: [2001, 2002, 2003, 2004], Sthree: [3001, 3002, 3003, 3004]};
+        var sectionIDs = ['Sone','Stwo','Sthree'];
+        var rowIDs = [[0,1,2,3],[0,1,2,3],[0,1,2,3]]
+        var ds = new ListView.DataSource({
+            getRowData: this.getRowData,
+            getSectionHeaderData: this.getSectionData,
+            rowHasChanged: (row1, row2) => row1 !== row2,
+            sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
+        });
+
         this.state = {
-            dataSource:ds.cloneWithRows(data),
+            dataSource: ds.cloneWithRowsAndSections(data, sectionIDs, rowIDs)
         };
     }
-    changeds(){
-        console.log('ds data changing...');
-        var data2 =[1,2,3] ;
-        this.setState(
-            {dataSource:ds.cloneWithRows(data2)}
+
+
+    getRowData(dataBlob, sectionID, rowID){
+            return dataBlob[sectionID][rowID];
+    }
+
+    getSectionData(dataBlob, sectionID ){
+                return sectionID;
+    }
+
+
+
+    renderSectionHeader(sectionData, sectionID) {
+        return (
+            <View style={styles.section}>
+                <Text>
+                    {sectionData}
+                </Text>
+            </View>
         );
     }
-    changeds2(){
-        console.log('state ds data changing...');
-        var data2 =[1,2,3] ;
-        this.setState(
-            {dataSource:this.state.dataSource.cloneWithRows(data2)}
-        );
-    }
-    changeds3(){
-        console.log('state ds data changing problem...');
-        data[0] = 1 ;
-        this.setState(
-            {dataSource:this.state.dataSource.cloneWithRows(data)}
+
+    renderHeader() {
+        return (
+            <View style={styles.header}>
+                <Text>
+                    I am Header
+                </Text>
+            </View>
         );
     }
 
 
+    renderFooter() {
+        return (
+            <View style={styles.footer}>
+                <Text>
+                    I am Footer
+                </Text>
+            </View>
+        );
+    }
+
+    renderRow(rowData, sectionID, rowID) {
+        return (
+            <View style={styles.row}>
+                <Text>{rowID} is {rowData}</Text>
+            </View>
+
+        );
+    }
 
 
     render() {
@@ -62,19 +97,17 @@ class ListViewTest extends Component {
             <View style={styles.container}>
                 <ListView
                     dataSource={this.state.dataSource}
-                    renderRow={(rowData,rowID) => <Text>{rowData}{console.log('renderRow is '+rowData)}</Text>}
-                />
+                    style={styles.listview}
+                    onChangeVisibleRows={(visibleRows, changedRows) => console.log({visibleRows, changedRows})}
+                    renderHeader={this.renderHeader}
+                    renderFooter={this.renderFooter}
+                    renderSectionHeader={this.renderSectionHeader}
+                    renderRow={this.renderRow}
 
-                <Text>data is {data[0]} {data[1]} {data[2]}</Text>
-                <TouchableOpacity style={[styles.buttonstyle,{borderColor:'red'}]} onPress={()=>this.changeds()}>
-                    <Text>Change ds</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonstyle,{borderColor:'red'}]} onPress={()=>this.changeds2()}>
-                    <Text>Change state datasource</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.buttonstyle,{borderColor:'red'}]} onPress={()=>this.changeds3()}>
-                    <Text>modify old data</Text>
-                </TouchableOpacity>
+                    initialListSize={10}
+                    pageSize={10}
+                    scrollRenderAheadDistance={2000}
+                />
 
             </View>
         );
@@ -87,18 +120,52 @@ var styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#F5FCFF',
-        marginTop:20,
+        marginTop: 20,
     },
-    buttonstyle:{
+    buttonstyle: {
         justifyContent: 'center',
         alignItems: 'center',
-        width:150,
-        height:40,
+        width: 150,
+        height: 40,
         borderColor: 'black',
         borderWidth: 1,
-        backgroundColor:'#06c1ae',
+        backgroundColor: '#06c1ae',
         marginBottom: 5,
     },
+    section:{
+        borderColor: 'blue',
+        borderWidth: 1,
+        backgroundColor:'#cdcdcd',
+        width:screenW,
+
+    },
+
+    header:{
+        borderColor: 'red',
+        borderWidth: 1,
+        backgroundColor:'#f5e327',
+        width:screenW,
+        height:44,
+
+    },
+    footer:{
+        borderColor: 'yellow',
+        borderWidth: 1,
+        backgroundColor:'#9735a5',
+        width:screenW,
+        height:44,
+
+    },
+    row:{
+        borderColor: 'gray',
+        borderWidth: 1,
+        backgroundColor:'#6C92AD',
+        height:40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width:screenW,
+
+    }
 });
 
 
