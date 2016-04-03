@@ -25,24 +25,17 @@ class ListViewTest extends Component {
         super(props);
 
         var data = {Sone: [1001, 1002, 1003, 1004], Stwo: [2001, 2002, 2003, 2004], Sthree: [3001, 3002, 3003, 3004]};
-        var sectionIDs = ['Sone','Stwo','Sthree'];
-        var rowIDs = [[0,1,2,3],[0,1,2,3],[0,1,2,3]]
         var ds = new ListView.DataSource({
-            getRowData: this.getRowData,
-            getSectionHeaderData: this.getSectionData,
+            getSectionHeaderData:this.getSectionData,
             rowHasChanged: (row1, row2) => row1 !== row2,
             sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
         });
 
         this.state = {
-            dataSource: ds.cloneWithRowsAndSections(data, sectionIDs, rowIDs)
+            dataSource: ds.cloneWithRowsAndSections(data, null, null)
         };
     }
 
-
-    getRowData(dataBlob, sectionID, rowID){
-            return dataBlob[sectionID][rowID];
-    }
 
     getSectionData(dataBlob, sectionID ){
                 return sectionID;
@@ -160,7 +153,7 @@ var styles = StyleSheet.create({
         borderColor: 'gray',
         borderWidth: 1,
         backgroundColor:'#6C92AD',
-        height:40,
+        height:50,
         justifyContent: 'center',
         alignItems: 'center',
         width:screenW,
