@@ -14,6 +14,7 @@ import React, {
     ListView,
     Text,
     TouchableOpacity,
+    TouchableHighlight,
 } from 'react-native';
 
 
@@ -27,32 +28,20 @@ class ListViewTest extends Component {
         var data = {
             Sone: [1001, 1002, 1003, 1004],
             Stwo: [2001, 2002, 2003, 2004],
-            Sthree: {up:3001,down:3002,left:3003, right:3004}
+            Sthree: {up:3001,down:3002,left:3003, right:3004},
+            Sfour: {up:4001,down:4002,left:4003, right:4004},
+            Sfive: {up:5001,down:5002,left:5003, right:5004}
         };
-        var sectionIDs = ['Sone','Stwo','Sthree'];
-        var rowIDs = [[0,1,2,3],[3,2,1,0],['up','down','left','right']]
+
         var ds = new ListView.DataSource({
-            getRowData: this.getRowData,
-            getSectionHeaderData: this.getSectionData,
             rowHasChanged: (row1, row2) => row1 !== row2,
             sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
         });
 
         this.state = {
-            dataSource: ds.cloneWithRowsAndSections(data, sectionIDs, rowIDs)
+            dataSource: ds.cloneWithRowsAndSections(data)
         };
     }
-
-
-    getRowData(dataBlob, sectionID, rowID){
-            return dataBlob[sectionID][rowID];
-    }
-
-    getSectionData(dataBlob, sectionID ){
-                return sectionID;
-    }
-
-
 
 
 
@@ -81,10 +70,20 @@ class ListViewTest extends Component {
         return (
             <View style={styles.section}>
                 <Text>
-                    {sectionData}
+                    and {sectionID}
                 </Text>
             </View>
         );
+    }
+
+    renderSeparator(sectionID, rowID, highlightRow){
+        return(
+            <TouchableHighlight key={sectionID+rowID}  style={styles.separator} underlayColor='#dddddd'>
+                <Text>separator[{sectionID}][{rowID}]</Text>
+            </TouchableHighlight>
+
+        );
+
     }
 
     renderRow(rowData, sectionID, rowID) {
@@ -109,6 +108,7 @@ class ListViewTest extends Component {
                     renderHeader={this.renderHeader}
                     renderFooter={this.renderFooter}
                     renderSectionHeader={this.renderSectionHeader}
+                    renderSeparator={this.renderSeparator}
                     renderRow={this.renderRow}
 
                     initialListSize={10}
@@ -172,6 +172,16 @@ var styles = StyleSheet.create({
         alignItems: 'center',
         width:screenW,
 
+    },
+
+    separator:{
+        borderColor: '#26b8a8',
+        borderWidth: 1,
+        backgroundColor:'#af30ea',
+        height:20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width:screenW,
     }
 });
 
